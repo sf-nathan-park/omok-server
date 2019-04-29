@@ -18,8 +18,8 @@ r.on('line', function(line){
 r.on('close', function(){
     process.exit();
 });
- 
-var client = new WebSocket('ws://localhost:8080/');
+
+var client = new WebSocket('ws://sendbird-omok.herokuapp.com:8080/');
 client.on('open', function() {
     console.log("open");
     r.prompt();
@@ -31,6 +31,10 @@ client.on('message', function incoming(message) {
 
 client.on('ping', function() {
     console.log("ping");
+});
+
+client.on('error', function(err) {
+    console.error("error " + err);
 });
 
 client.on('close', function() {

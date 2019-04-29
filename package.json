@@ -1,0 +1,24 @@
+{
+  "name": "omok",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "ws": "^6.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sf-nathan-park/omok-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sf-nathan-park/omok-server/issues"
+  },
+  "homepage": "https://github.com/sf-nathan-park/omok-server#readme"
+}
