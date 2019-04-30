@@ -2,7 +2,7 @@
 
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 5000 });
+const wss = new WebSocket.Server({ port: process.env.PORT || 5000 });
 
 wss.on('connection', function connection(ws, request) {
   console.log("connected. " + request.connection.remoteAddress);
