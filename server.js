@@ -31,6 +31,9 @@ wss.on('connection', function connection(ws, request) {
 
         sendLogi(errorCode, ws);
         break;
+      case "USER_LIST":
+        sendUserList(ws);
+        break;
     }
 
     // console.log('received: %s', message);
@@ -46,5 +49,18 @@ function sendLogi(errorCode, ws) {
   var obj = new Object();
   obj.error_code = errorCode;
   var data = "LOGI " + JSON.stringify(obj);
+  ws.send(data);
+}
+
+function sendUserList(ws) {
+  var arr = new Array();
+  for (var i in users) {
+    var user = users[i];
+    var obj = new Object();
+    obj.user_id = user.userId;
+    obj.is_playing = user.isPlaying;
+    arr.push(obj);
+  }
+  var data = "USER_LIST " + JSON.stringify(arr);
   ws.send(data);
 }
