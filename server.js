@@ -27,6 +27,8 @@ wss.on('connection', function connection(ws, request) {
           }
         }
 
+        console.log("[LOGI] userId = " + userId + ", error_code = " + errorCode);
+
         if (errorCode == 0) {
           users.push(new User(userId, ws));
         }
@@ -41,7 +43,7 @@ wss.on('connection', function connection(ws, request) {
         var I = getUserByConnection(ws);
         var opponent = getUserById(opponentUserId);
 
-        console.log("START_MATCH. opponentUserId = " + opponentUserId + ", I = " + I + ", opponent = " + opponent);
+        console.log("[START_MATCH] opponentUserId = " + opponentUserId + ", I = " + I + ", opponent = " + opponent);
 
         if (I == null) {
           return;
@@ -62,7 +64,7 @@ wss.on('connection', function connection(ws, request) {
         var isAccept = JSON.parse(command.payload).is_accept;
         var match = getMatchById(matchId);
 
-        console.log("ACCEPT_MATCH. matchId = " + matchId + ", isAccept = " + isAccept + ", match = " + match);
+        console.log("[ACCEPT_MATCH] matchId = " + matchId + ", isAccept = " + isAccept + ", match = " + match);
 
         if (match == null) {
           return;

@@ -20,6 +20,12 @@ class User {
     set isPlaying(isPlaying) {
         this._is_playing = isPlaying
     }
+
+    
+}
+
+User.prototype.toString = function() {
+    return "User[userId=" + this.userId + ",isPlaying=" + this.isPlaying + "]";
 }
 
 module.exports = User;

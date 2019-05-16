@@ -20,4 +20,8 @@ class Match {
     }
 }
 
+Match.prototype.toString = function() {
+    return "Match[challenger=" + this.challenger + ",opponent=" + this.opponent + "]";
+}
+
 module.exports = Match;

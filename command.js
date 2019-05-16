@@ -25,4 +25,8 @@ class Command {
     }
 }
 
+Command.prototype.toString = function() {
+    return "Command[command=" + this.command + ",payload=" + this.payload + "]";
+}
+
 module.exports = Command;
