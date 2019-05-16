@@ -17,7 +17,7 @@ class User {
         return this._is_playing
     }
 
-    set setPlaying(isPlaying) {
+    set isPlaying(isPlaying) {
         this._is_playing = isPlaying
     }
 }
