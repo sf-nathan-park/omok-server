@@ -15,6 +15,7 @@ var matches = [];
 wss.on('connection', function connection(ws, request) {
   ws.on('message', function incoming(message) {
     var command = new Command(message.toString());
+    var I = getUserByConnection(ws);
     switch(command.command) {
       case "LOGI":
         var userId = JSON.parse(command.payload).user_id;
@@ -40,7 +41,6 @@ wss.on('connection', function connection(ws, request) {
         break;
       case "START_MATCH":
         var opponentUserId = JSON.parse(command.payload).opponent_user_id;
-        var I = getUserByConnection(ws);
         var opponent = getUserById(opponentUserId);
 
         console.log("[START_MATCH] opponentUserId = " + opponentUserId + ", I = " + I + ", opponent = " + opponent);
@@ -80,20 +80,66 @@ wss.on('connection', function connection(ws, request) {
         var data = "ACCEPT_MATCH " + command.payload;
         match.challenger.websocket.send(data);
         break;
-    }
+      case "TURN":
+        var matchId = JSON.parse(command.payload).match_id;
+        var match = getMatchById(matchId);
 
-    // console.log('received: %s', message);
-    // wss.clients.forEach(function each(client) {
-    //     if (client !== ws && client.readyState === WebSocket.OPEN) {
-    //         client.send(message);
-    //     }
-    // });
+        if (match != null) {
+          var receiver = match.challenger === I ? match.opponent : match.challenger;
+          var data = command.command + " " + command.payload;
+          receiver.websocket.send(data);
+        }
+
+        break;
+      case "END_MATCH":
+        var matchId = JSON.parse(command.payload).match_id;
+        var match = getMatchById(matchId);
+        
+        if (match != null) {
+          var receiver = match.challenger === I ? match.opponent : match.challenger;
+
+          if (receiver != null) {
+            var data = command.command + " " + command.payload;
+            receiver.websocket.send(data);
+          }
+
+          matches.remove(match);
+          matches.challenger.isPlaying = false;
+          matches.opponent.isPlaying = false;
+        }
+
+        break;
+      case "SURRENDER":
+        var matchId = JSON.parse(command.payload).match_id;
+        var match = getMatchById(matchId);
+        
+        if (match != null) {
+          var receiver = match.challenger === I ? match.opponent : match.challenger;
+          if (receiver != null) {
+            var data = command.command + " " + command.payload;
+            receiver.websocket.send(data);
+          }
+        }
+
+        break;
+    }
   });
 
   ws.on('close', function() {
     var user = getUserByConnection(ws);
     if (user == null) {
       return;
+    }
+
+    if (user.isPlaying) {
+      var match = getMatchByUserId(user.userId);
+      if (match != null) {
+        var receiver = match.challenger === user ? match.opponent : match.challenger;
+        if (receiver != null) {
+          var data = "DISCONNECT {}";
+          receiver.websocket.send(data);
+        }
+      }
     }
   })
 });
@@ -121,6 +167,16 @@ function getUserById(userId) {
 function getMatchById(matchId) {
   for (var i in matches) {
     if (matches[i].matchId === matchId) {
+      return matches[i];
+    }
+  }
+
+  return null;
+}
+
+function getMatchByUserId(userId) {
+  for (var i in matches) {
+    if (matches[i].challenger.userId === userId || matches[i].opponent.userId === userId) {
       return matches[i];
     }
   }

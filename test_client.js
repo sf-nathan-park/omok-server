@@ -19,8 +19,8 @@ r.on('close', function(){
     process.exit();
 });
 
-var client = new WebSocket('ws://sendbird-omok.herokuapp.com:5000/');
-//var client = new WebSocket('ws://localhost:5000/');
+// var client = new WebSocket('ws://sendbird-omok.herokuapp.com/');
+var client = new WebSocket('ws://localhost:5000/');
 client.on('open', function() {
     console.log("open");
     r.prompt();
