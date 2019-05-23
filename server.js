@@ -22,7 +22,7 @@ wss.on('connection', function connection(ws, request) {
         var errorCode = 0;
 
         for (var i in users) {
-          if (users[i].userId === userId) {
+          if (users[i].userId === userId || users[i].websocket === ws) {
             errorCode = 1;
             break;
           }
@@ -141,6 +141,8 @@ wss.on('connection', function connection(ws, request) {
         }
       }
     }
+
+    users.remove(user);
   })
 });
 
