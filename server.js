@@ -14,6 +14,7 @@ var matches = [];
 
 wss.on('connection', function connection(ws, request) {
   ws.on('message', function incoming(message) {
+    console.log('Received Message : ' + message);
     var command = new Command(message.toString());
     var I = getUserByConnection(ws);
     switch(command.command) {
