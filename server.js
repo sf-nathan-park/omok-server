@@ -75,7 +75,10 @@ wss.on('connection', function connection(ws, request) {
           match.challenger.isPlaying = true;
           match.opponent.isPlaying = true;
         } else {
-          matches.remove(match);
+          let index = matches.indexOf(match);
+          if (index > -1) {
+            matches.splice(index, 1);
+          }
         }
 
         var data = "ACCEPT_MATCH " + command.payload;
@@ -104,9 +107,13 @@ wss.on('connection', function connection(ws, request) {
             receiver.websocket.send(data);
           }
 
-          matches.remove(match);
-          matches.challenger.isPlaying = false;
-          matches.opponent.isPlaying = false;
+          match.challenger.isPlaying = false;
+          match.opponent.isPlaying = false;
+
+          let index = matches.indexOf(match);
+          if (index > -1) {
+            matches.splice(index, 1);
+          }
         }
 
         break;
@@ -123,11 +130,17 @@ wss.on('connection', function connection(ws, request) {
         }
 
         break;
+      case "DEBUG":
+        console.log("### DEBUG");
+        console.log("users = " + users);
+        console.log("matches = " + matches);
+        break;
     }
   });
 
   ws.on('close', function() {
     var user = getUserByConnection(ws);
+    console.log("[CLOSE] user = " + user);
     if (user == null) {
       return;
     }
@@ -143,7 +156,13 @@ wss.on('connection', function connection(ws, request) {
       }
     }
 
-    users.remove(user);
+    console.log("users = " + users);
+    console.log("user = " + user);
+
+    let index = users.indexOf(user);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
   })
 });
 
