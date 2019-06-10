@@ -140,6 +140,10 @@ wss.on('connection', function connection(ws, request) {
         }
 
         break;
+      case "PING":
+        var data = "PONG {}";
+        ws.send(data);
+        break;
       case "DEBUG":
         console.log("### DEBUG");
         console.log("users = " + users);
