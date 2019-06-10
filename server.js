@@ -17,9 +17,19 @@ wss.on('connection', function connection(ws, request) {
     console.log('Received Message : ' + message);
     var command = new Command(message.toString());
     var I = getUserByConnection(ws);
+
+    var json = "";
+
+    try {
+      json = JSON.parse(command.payload);
+    } catch (e) {
+      console.log("Failed to parse Json. e = " + e);
+      return;
+    }
+
     switch(command.command) {
       case "LOGI":
-        var userId = JSON.parse(command.payload).user_id;
+        var userId = json.user_id;
         var errorCode = 0;
 
         for (var i in users) {
@@ -41,7 +51,7 @@ wss.on('connection', function connection(ws, request) {
         sendUserList(ws);
         break;
       case "START_MATCH":
-        var opponentUserId = JSON.parse(command.payload).opponent_user_id;
+        var opponentUserId = json.opponent_user_id;
         var opponent = getUserById(opponentUserId);
 
         console.log("[START_MATCH] opponentUserId = " + opponentUserId + ", I = " + I + ", opponent = " + opponent);
@@ -61,8 +71,8 @@ wss.on('connection', function connection(ws, request) {
         break;
 
       case "ACCEPT_MATCH":
-        var matchId = JSON.parse(command.payload).match_id;
-        var isAccept = JSON.parse(command.payload).is_accept;
+        var matchId = json.match_id;
+        var isAccept = json.is_accept;
         var match = getMatchById(matchId);
 
         console.log("[ACCEPT_MATCH] matchId = " + matchId + ", isAccept = " + isAccept + ", match = " + match);
@@ -85,7 +95,7 @@ wss.on('connection', function connection(ws, request) {
         match.challenger.websocket.send(data);
         break;
       case "TURN":
-        var matchId = JSON.parse(command.payload).match_id;
+        var matchId = json.match_id;
         var match = getMatchById(matchId);
 
         if (match != null) {
@@ -96,7 +106,7 @@ wss.on('connection', function connection(ws, request) {
 
         break;
       case "END_MATCH":
-        var matchId = JSON.parse(command.payload).match_id;
+        var matchId = json.match_id;
         var match = getMatchById(matchId);
         
         if (match != null) {
@@ -118,7 +128,7 @@ wss.on('connection', function connection(ws, request) {
 
         break;
       case "SURRENDER":
-        var matchId = JSON.parse(command.payload).match_id;
+        var matchId = json.match_id;
         var match = getMatchById(matchId);
         
         if (match != null) {
