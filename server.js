@@ -156,9 +156,6 @@ wss.on('connection', function connection(ws, request) {
       }
     }
 
-    console.log("users = " + users);
-    console.log("user = " + user);
-
     let index = users.indexOf(user);
     if (index > -1) {
       users.splice(index, 1);
