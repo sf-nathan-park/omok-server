@@ -21,7 +21,12 @@ class User {
         this._is_playing = isPlaying
     }
 
-    
+    toJson() {
+        var obj = new Object();
+        obj.user_id = this.userId;
+        obj.is_playing = this.isPlaying;
+        return obj;
+    }
 }
 
 User.prototype.toString = function() {

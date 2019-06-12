@@ -145,9 +145,25 @@ wss.on('connection', function connection(ws, request) {
         ws.send(data);
         break;
       case "DEBUG":
-        console.log("### DEBUG");
-        console.log("users = " + users);
-        console.log("matches = " + matches);
+        var userArr = new Array();
+        for (var i in users) {
+          var user = users[i];
+          userArr.push(user.toJson());
+        }
+    
+        var matchArr = new Array();
+        for (var i in matches) {
+          var match = matches[i];
+          matchArr.push(match.toJson());
+        }
+
+        var obj = new Object();
+        obj.users = userArr;
+        obj.matches = matchArr;
+
+        var data = "DEBUG " + JSON.stringify(obj);
+        ws.send(data);
+        console.log(data);
         break;
     }
   });
@@ -164,8 +180,14 @@ wss.on('connection', function connection(ws, request) {
       if (match != null) {
         var receiver = match.challenger === user ? match.opponent : match.challenger;
         if (receiver != null) {
+          receiver.isPlaying = false;
           var data = "DISCONNECT {}";
           receiver.websocket.send(data);
+        }
+
+        let indexOfMatch = matches.indexOf(match);
+        if (indexOfMatch > -1) {
+          matches.splice(indexOfMatch, 1);
         }
       }
     }
@@ -236,10 +258,7 @@ function sendUserList(ws) {
   var arr = new Array();
   for (var i in users) {
     var user = users[i];
-    var obj = new Object();
-    obj.user_id = user.userId;
-    obj.is_playing = user.isPlaying;
-    arr.push(obj);
+    arr.push(user.toJson());
   }
   var data = "USER_LIST " + JSON.stringify(arr);
   ws.send(data);

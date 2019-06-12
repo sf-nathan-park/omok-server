@@ -18,6 +18,25 @@ class Match {
     get matchId() {
         return this._matchId;
     }
+
+    toJson() {
+        var obj = new Object();
+        obj.match_id = this.matchId;
+
+        if (this.challenger != null) {
+          obj.challenger_id = this.challenger.userId;
+        } else {
+          obj.challenger_id = "";
+        }
+
+        if (this.opponent != null) {
+          obj.opponent_id = this.opponent.userId;
+        } else {
+          obj.opponent_id = "";
+        }
+
+        return obj;
+    }
 }
 
 Match.prototype.toString = function() {
